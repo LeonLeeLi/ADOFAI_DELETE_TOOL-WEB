@@ -7,9 +7,11 @@ from flask import (
     redirect,
     url_for,
 )
+from flask_cors import CORS
 import os
 from static.RemoveVFX import *
 from random import randint
+import json
 
 # 获取运行时路径
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -30,8 +32,9 @@ options = {
     "L": "CustomBackground",
 }
 
-# 实例化
+# 实例化,开启跨域
 app = Flask(__name__)
+CORS(app, resources=r"/*")
 # 定义上传文件夹名
 upload_folder_name = "upload"
 modify_folder_name = "modify"
@@ -74,25 +77,35 @@ def uphtml():
             else:
                 break
 
-        print(new_filename)
-
         f.save(new_filepath)
 
-        # 创建响应对象并设置cookie
-        response = make_response(redirect(url_for("modify")))
-        response.set_cookie("filename", f"{file_name}{temp}")
-        response.set_cookie("file_extension", file_extension)
-        return response
+        filename = f"{file_name}{temp}"
+
+        file_redirect = f"/modify?nm={filename}.adofai"
+
+        response = {
+            "filename": filename,
+            "file_extension": ".adofai",
+            "file_redirect": file_redirect,
+        }
+
+        return json.dumps(response)
 
 
 @app.route("/modify/", methods=["GET", "POST"])
 def modify():
     if request.method == "GET":
-        return render_template("modify.html")
+        response = make_response(render_template("modify.html"))
+        file_name = request.args.get("nm")
+        print(file_name)
+        name, extension = os.path.splitext(file_name)
+        response.set_cookie("FileName", name)
+        response.set_cookie("FileExtension", extension)
+        return response
     elif request.method == "POST":
         checkbox_values = request.form.getlist("box")
-        filename = request.cookies.get("filename")
-        file_extension = request.cookies.get("file_extension")
+        filename = request.cookies.get("FileName")
+        file_extension = request.cookies.get("FileExtension")
         fullname = f"{filename}{file_extension}"
         newfullname = f"{filename}(Without VFX){file_extension}"
         fullpath = os.path.join("upload", fullname)
@@ -100,14 +113,17 @@ def modify():
         adofai.fix_json()
         adofai.remove_event()
         adofai.encode_and_dump()
-        response = make_response(render_template('done.html'))
-        response.set_cookie("downloadpath",newfullname)
-        return response
+        return redirect(url_for("done", filename=newfullname))
 
 
-@app.route("/download/", methods=["GET"])
-def Download():
-    new_filename = request.cookies.get("downloadpath")
+@app.route("/done/<filename>/", methods=["GET"])
+def done(filename):
+    return render_template("done.html", filename=filename)
+
+
+@app.route("/download/<filename>/", methods=["GET"])
+def Download(filename):
+    new_filename = "%s" % filename
     return send_from_directory("modify", new_filename, as_attachment=True)
 
 
