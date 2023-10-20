@@ -3,13 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="static/jquery.js"></script>
+    <script src="static/jquery.form.js"></script>
     <title>Adofai Map VFX Remover - Upload</title>
 </head>
+<style>
+    button{
+        width: 300pt;
+        height: 100pt;
+        align-items: center;
+    }
+</style>
 <body>
     <h1>Adofai Map VFX Remover</h1>
-    <form method="POST" enctype="multipart/form-data" action="">
-        <input type="file" accept=".adofai" name="adofaifile"><br>
-        <input type="submit" value="上传">
-    </form>   
+    <input type="file" hidden id="adofai" name="adofaifile">
+    <button>Click to Upload</button>
+
+
+    <script>
+        $(document).on('click','button', function(){
+            $("#adofai").click()
+        })
+
+        $('#adofai').change(function(){
+            var file = this.files[0];     
+            var formData = new FormData()
+            formData.append('adofaifile', file)
+            $.ajax({
+                type: 'POST',
+                url: 'http://localhost:5000',
+                data: formData,
+                crossDomain: true,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    var jdata = JSON.parse(response)
+                    file_redirect = jdata.file_redirect
+                    window.location.href = file_redirect
+                }
+            })
+        })
+
+    </script>
 </body>
 </html>
