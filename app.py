@@ -10,6 +10,7 @@ from flask import (
 from flask_cors import CORS
 import os
 from static.RemoveVFX import *
+from wsgiref.simple_server import make_server
 from random import randint
 import json
 
@@ -130,4 +131,5 @@ def Download(filename):
 
 # 启动flask服务
 if __name__ == "__main__":
-    app.run(debug=False, host="0.0.0.0", port=80)
+    website = make_server("0.0.0.0", 80, app)
+    website.serve_forever()
