@@ -127,6 +127,7 @@ def Download(filename):
     return send_from_directory("modify", new_filename, as_attachment=True)
 
 
+
 # 启动flask服务
 if __name__ == "__main__":
-    app.run(debug=False, host="0.0.0.0")
+    app.run(debug=False, host="0.0.0.0", port=80)
