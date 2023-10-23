@@ -13,7 +13,7 @@ python app.py
 ```bash
 .\venv\scripts\activate
 
-pyhton app.py
+python app.py
 ```
 
 We recommend deploying using a virtual environment or conda because it is more convenient for you to modify or use, without polluting the existing Python environment
