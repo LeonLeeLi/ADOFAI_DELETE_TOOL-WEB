@@ -26,4 +26,4 @@ The default port is 5123 , you can also use nginx to deploy this.
 
 We recommend that you use the Docker version ，There is the website.
 
-**<font color="red" size="7">This project is no longer being updated. Please migrate to the Docker version.</font>**
+<font color="red" size="7">This project is no longer being updated. Please migrate to the Docker version.</font>
