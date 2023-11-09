@@ -26,4 +26,4 @@ The default port is 5123 , you can also use nginx to deploy this.
 
 We recommend that you use the Docker version ，There is the website.
 
-### **This project is no longer being updated. Please migrate to the Docker version.**
+### **This project is no longer being updated. Please migrate to the [Docker](https://github.com/LeonLeeLi/adofai_delete_tool_web-docker) version.** 
